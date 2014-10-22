@@ -11,15 +11,13 @@
 //  Ray-tracing stuff //
 ////////////////////////
 double RayGroup::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
-	for (int i = 0; i < sNum; i++) {
-		double resp = shapes[i]->intersect(ray, iInfo);
+	for (int i = sNum-1; i >=0; i--) {
+		double resp = shapes[i]->intersect(ray, iInfo, mx);
 		if (resp > 0) {
-			std::cout << resp;
-			std::cout << "\n";
-			return resp;
+			mx = resp;
 		}
 	}
-	return -1;
+	return  mx;
 }
 
 BoundingBox3D RayGroup::setBoundingBox(void){

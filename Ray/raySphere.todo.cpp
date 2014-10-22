@@ -21,15 +21,22 @@ double RaySphere::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 	}
 
 	double thc = sqrt(pow(radius,2)-d2);
-	double retTime = tca - thc;
+	double t = tca - thc;
+	double distance = (ray(t)-ray.position).length();
 
-	Point3D PminusO = ray(retTime)-center;
-	Point3D normal = PminusO/PminusO.unit();
+	if (mx > 0 && distance > mx) {
+		return -1;
+	}
+
+	Point3D PminusO = ray(t)-center;
+	Point3D normal = PminusO.unit();
 
 	iInfo.normal = normal;
-	iInfo.iCoordinate = ray(retTime);
+	iInfo.iCoordinate = ray(t);
+	iInfo.material = material;
 
-	return retTime;
+	return distance;
+
 }
 
 BoundingBox3D RaySphere::setBoundingBox(void){
