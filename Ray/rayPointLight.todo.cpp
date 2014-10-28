@@ -33,7 +33,7 @@ Point3D RayPointLight::getSpecular(Point3D cameraPosition,RayIntersectionInfo& i
 	return Is;
 }
 int RayPointLight::isInShadow(RayIntersectionInfo& iInfo,RayShape* shape,int& isectCount){
-	return 0;
+	return 1;
 }
 Point3D RayPointLight::transparency(RayIntersectionInfo& iInfo,RayShape* shape,Point3D cLimit){
 	return Point3D(1,1,1);

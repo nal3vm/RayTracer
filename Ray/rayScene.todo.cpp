@@ -59,15 +59,19 @@ Ray3D RayScene::GetRay(RayCamera* camera,int i,int j,int width,int height){
 }
 
 Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
-
 	RayIntersectionInfo iInfo;
 	double resp = group->intersect(ray, iInfo, -1);
 	if (resp > 0) {
 		Point3D diffuse = Point3D(0,0,0);
 		Point3D specular = Point3D(0,0,0);
 		for (int i=0; i<lightNum; i++) {
-			diffuse+= lights[i]->getDiffuse(camera->position, iInfo);
-			specular+= lights[i]->getSpecular(camera->position, iInfo);
+			RayIntersectionInfo iInfo2 = iInfo;
+			int iSectCount = 0;
+			Point3D diffuseResp = lights[i]->getDiffuse(camera->position, iInfo);
+			Point3D specularResp = lights[i]->getSpecular(camera->position, iInfo);
+			int shadow = lights[i]->isInShadow(iInfo2, group, iSectCount);
+			diffuse = diffuse+diffuseResp*shadow;
+			specular = specular+specularResp*shadow;
 		}
 		Point3D response = iInfo.material->ambient*ambient+iInfo.material->emissive + diffuse + specular;
 		for (int i = 0; i <3; i++) {
@@ -78,9 +82,10 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
 				response[i] = 1;
 			}
 		}
+
 		return response;
 	}
-	return background;
+	else return background;
 }
 
 //////////////////

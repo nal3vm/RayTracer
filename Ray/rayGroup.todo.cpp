@@ -11,7 +11,7 @@
 //  Ray-tracing stuff //
 ////////////////////////
 double RayGroup::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
-	for (int i = sNum-1; i >=0; i--) {
+	for (int i = 0; i < sNum; i++) {
 		double resp = shapes[i]->intersect(ray, iInfo, mx);
 		if (resp > 0) {
 			mx = resp;
