@@ -11,13 +11,33 @@
 //  Ray-tracing stuff //
 ////////////////////////
 double RayGroup::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
+	RayIntersectionInfo temp;
+	double retTime = -1;
+	double retDistance = -1;
+
+	Matrix4D mat = getInverseMatrix();
+	Ray3D transformedRay;
+	transformedRay.position = mat.multPosition(ray.position);
+	transformedRay.direction = mat.multDirection(ray.direction).unit();
+
 	for (int i = 0; i < sNum; i++) {
-		double resp = shapes[i]->intersect(ray, iInfo, mx);
-		if (resp > 0) {
-			mx = resp;
+		double respTime = shapes[i]->intersect(transformedRay, iInfo, retTime);
+		if (respTime < 0) {
+			continue;
+		}
+		iInfo.iCoordinate = getMatrix().multPosition(iInfo.iCoordinate);
+		iInfo.normal = (getMatrix().multNormal(iInfo.normal)).unit();
+
+		double distance = (iInfo.iCoordinate - ray.position).length();
+		if (distance < retDistance || retDistance < 0) {
+			retDistance = distance;
+			retTime = respTime;
+			temp = iInfo;
 		}
 	}
-	return  mx;
+
+	iInfo = temp;
+	return retTime;
 }
 
 BoundingBox3D RayGroup::setBoundingBox(void){
@@ -25,6 +45,9 @@ BoundingBox3D RayGroup::setBoundingBox(void){
 }
 
 int StaticRayGroup::set(void){
+	inverseTransform = localTransform.invert();
+	Matrix4D transposeTransform = localTransform.transpose();
+	normalTransform = transposeTransform.invert();
 	return 1;
 }
 //////////////////

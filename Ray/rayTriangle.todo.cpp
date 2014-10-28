@@ -17,9 +17,9 @@ double RayTriangle::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 	if (t < 0) {
 		return -1;
 	}
-	double distance = (ray.direction*t).length();
+	double distance = (ray.direction*t-ray.position).length();
 
-	if (mx > 0 && distance > mx) {
+	if (mx > 0 && t > mx) {
 		return -1;
 	}
 
@@ -46,13 +46,11 @@ double RayTriangle::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 		return -1;
 	}
 
-
-
 	iInfo.iCoordinate = p;
 	iInfo.material = material;
 	iInfo.normal = plane.normal;
 
-	return distance;
+	return t;
 }
 BoundingBox3D RayTriangle::setBoundingBox(void){
 	return bBox;

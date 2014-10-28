@@ -22,6 +22,9 @@ double RaySphere::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 
 	double thc = sqrt(pow(radius,2)-d2);
 	double t = tca - thc;
+	if (t < 0) {
+		return -1;
+	}
 	double distance = (ray(t)-ray.position).length();
 
 	if (mx > 0 && distance > mx) {
@@ -45,8 +48,8 @@ double RaySphere::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 		return -1;
 	}
 
-	double t1 = (b*-1+sqrt(pow(b,2)- 4*a*c))/2*a;
-	double t2 = (b*-1-sqrt(pow(b,2)- 4*a*c))/2*a;
+	double t1 = ((b*-1)+sqrt(pow(b,2)- 4*a*c))/2*a;
+	double t2 = ((b*-1)-sqrt(pow(b,2)- 4*a*c))/2*a;
 
 	double t = std::min(t1, t2);
 	if (t < 0) {
@@ -56,15 +59,11 @@ double RaySphere::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 	Point3D p = ray.position + ray.direction*t;
 	double distance = (p - ray.position).length();
 
-	if (mx > 0 && distance > mx) {
-		return -1;
-	}
-
 	iInfo.normal = (p-center).unit();
 	iInfo.iCoordinate = p;
 	iInfo.material = material;
 
-	return distance;
+	return t;
 }
 
 BoundingBox3D RaySphere::setBoundingBox(void){

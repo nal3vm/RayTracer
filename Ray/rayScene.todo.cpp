@@ -13,11 +13,13 @@
 ///////////////////////
 
 Point3D RayScene::Reflect(Point3D v,Point3D n){
-	return Point3D();
+	Point3D R = n*2*(n.dot(v.negate().unit()))-v.negate().unit();
+	return R;
 }
 
 int RayScene::Refract(Point3D v,Point3D n,double ir,Point3D& refract){
-	return 0;
+	refract = v;
+	return 1;
 }
 
 Ray3D RayScene::GetRay(RayCamera* camera,int i,int j,int width,int height){
@@ -59,21 +61,32 @@ Ray3D RayScene::GetRay(RayCamera* camera,int i,int j,int width,int height){
 }
 
 Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
+	if (rDepth == 0) {
+		return Point3D();			
+	}
 	RayIntersectionInfo iInfo;
 	double resp = group->intersect(ray, iInfo, -1);
 	if (resp > 0) {
+		Point3D reflectedDirection = Reflect(ray.direction, iInfo.normal);
+		Ray3D reflectedRay(iInfo.iCoordinate+(reflectedDirection.unit()*0.0001), reflectedDirection.unit());
+
+		Point3D refractedDirection;
+		int refract = Refract(ray.direction, iInfo.normal, 0, refractedDirection);
+		Ray3D refractedRay(iInfo.iCoordinate+(refractedDirection.unit()*0.0001), refractedDirection.unit());
+		Point3D refractedTransparency = iInfo.material->transparent;
+
 		Point3D diffuse = Point3D(0,0,0);
 		Point3D specular = Point3D(0,0,0);
 		for (int i=0; i<lightNum; i++) {
 			RayIntersectionInfo iInfo2 = iInfo;
 			int iSectCount = 0;
-			Point3D diffuseResp = lights[i]->getDiffuse(camera->position, iInfo);
-			Point3D specularResp = lights[i]->getSpecular(camera->position, iInfo);
-			int shadow = lights[i]->isInShadow(iInfo2, group, iSectCount);
-			diffuse = diffuse+diffuseResp*shadow;
-			specular = specular+specularResp*shadow;
+			Point3D diffuseResp = lights[i]->getDiffuse(camera->position, iInfo2);
+			Point3D specularResp = lights[i]->getSpecular(camera->position, iInfo2);
+			Point3D transparency = lights[i]->transparency(iInfo2, group, cLimit);
+			diffuse = diffuse+diffuseResp*transparency;
+			specular = specular+specularResp*transparency;
 		}
-		Point3D response = iInfo.material->ambient*ambient+iInfo.material->emissive + diffuse + specular;
+		Point3D response = iInfo.material->ambient*ambient+iInfo.material->emissive + diffuse + specular + GetColor(reflectedRay, rDepth-1, cLimit) +GetColor(refractedRay, rDepth-1, cLimit)*refractedTransparency;
 		for (int i = 0; i <3; i++) {
 			if (response[i] < 0) {
 				response[i] = 0;
@@ -82,10 +95,9 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
 				response[i] = 1;
 			}
 		}
-
 		return response;
 	}
-	else return background;
+	else return Point3D();
 }
 
 //////////////////

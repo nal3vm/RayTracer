@@ -81,7 +81,9 @@ Point3D::Point3D(const double& x,const double& y,const double& z){
 }
 double&    Point3D::operator[] (const int& i){return p[i];}
 double&    Point3D::index(const int& i){return p[i];}
-Point3D Point3D::unit(void) const {return scale(1.0/length());}
+Point3D Point3D::unit(void) const {
+	return scale(1.0/length());
+}
 Point3D Point3D::negate(void) const {return scale(-1.0);}
 Point3D Point3D::operator -(void) const {return scale(-1.0);}
 Point3D Point3D::scale(double s) const {return Point3D(p[0]*s,p[1]*s,p[2]*s);}
