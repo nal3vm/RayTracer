@@ -6,6 +6,7 @@
 #endif
 #include "rayGroup.h"
 #include <iostream>
+#include <algorithm>
 
 ////////////////////////
 //  Ray-tracing stuff //
@@ -20,8 +21,30 @@ double RayGroup::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 	transformedRay.position = mat.multPosition(ray.position);
 	transformedRay.direction = mat.multDirection(ray.direction).unit();
 
+	int hitCount = 0;
 	for (int i = 0; i < sNum; i++) {
-		double respTime = shapes[i]->intersect(transformedRay, iInfo, retTime);
+
+		double resp = shapes[i]->bBox.intersect(transformedRay);
+		if (resp < 0){continue;}
+		else {
+			RayShapeHit hit;
+			hit.t = resp;
+			hit.shape = shapes[i];
+			hits[hitCount] = hit;
+			hitCount++;
+		}
+	}
+
+	for (int i = 1; i < hitCount; i++) {
+		int j = i;
+		while (j > 0 && hits[j-1].t > hits[j].t) {
+			std::swap(hits[j-1],hits[j]);
+		}
+	}
+
+	for (int i = 0; i < hitCount; i++) {
+		if (hits[i].shape->bBox.intersect(transformedRay) < 0){continue;}
+		double respTime = hits[i].shape->intersect(transformedRay, iInfo, retTime);
 		if (respTime < 0) {
 			continue;
 		}
@@ -35,12 +58,44 @@ double RayGroup::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 			temp = iInfo;
 		}
 	}
-
 	iInfo = temp;
 	return retTime;
 }
 
 BoundingBox3D RayGroup::setBoundingBox(void){
+	for (int i = 0; i < sNum; i++) {
+		shapes[i]->setBoundingBox();
+	}
+	bBox.p[0] = shapes[0]->bBox.p[0];
+	bBox.p[1] = shapes[0]->bBox.p[1];
+	for (int i = 0; i < sNum; i++) {
+		BoundingBox3D shapeBox = shapes[i]->bBox.transform(getMatrix());
+		if(shapeBox.p[0][0] < bBox.p[0][0]){bBox.p[0][0]=shapeBox.p[0][0];}
+		if(shapeBox.p[0][1] < bBox.p[0][1]){bBox.p[0][1]=shapeBox.p[0][1];}
+		if(shapeBox.p[0][2] < bBox.p[0][2]){bBox.p[0][2]=shapeBox.p[0][2];}
+		if(shapeBox.p[1][0] > bBox.p[1][0]){bBox.p[1][0]=shapeBox.p[1][0];}
+		if(shapeBox.p[1][1] > bBox.p[1][1]){bBox.p[1][1]=shapeBox.p[1][1];}
+		if(shapeBox.p[1][2] > bBox.p[1][2]){bBox.p[1][2]=shapeBox.p[1][2];}
+	}
+
+	std::cout << "<";
+	std::cout << bBox.p[0][0];
+	std::cout << ",";
+	std::cout << bBox.p[0][1];
+	std::cout << ",";
+	std::cout << bBox.p[0][2];
+	std::cout << ">";
+	std::cout << "  --  ";
+
+	std::cout << "<";
+	std::cout << bBox.p[1][0];
+	std::cout << ",";
+	std::cout << bBox.p[1][1];
+	std::cout << ",";
+	std::cout << bBox.p[1][2];
+	std::cout << ">";
+	std::cout << "\n";
+
 	return bBox;
 }
 

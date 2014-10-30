@@ -53,6 +53,19 @@ double RayTriangle::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 	return t;
 }
 BoundingBox3D RayTriangle::setBoundingBox(void){
+	BoundingBox3D box;
+	box.p[0] = v[0]->position;
+	box.p[1] = v[1]->position;
+	for (int i = 0; i < 3; i++) {
+		if(v[i]->position[0] < box.p[0][0]){box.p[0][0]=v[i]->position[0];}
+		if(v[i]->position[1] < box.p[0][1]){box.p[0][1]=v[i]->position[1];}
+		if(v[i]->position[2] < box.p[0][2]){box.p[0][2]=v[i]->position[2];}
+		if(v[i]->position[0] > box.p[1][0]){box.p[1][0]=v[i]->position[0];}
+		if(v[i]->position[1] > box.p[1][1]){box.p[1][1]=v[i]->position[1];}
+		if(v[i]->position[2] > box.p[1][2]){box.p[1][2]=v[i]->position[2];}
+	}
+
+	bBox = box;
 	return bBox;
 }
 
