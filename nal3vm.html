@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title> Nal3vm Assignment 2 Writeup </title>
+</head>
+
+<body>
+<h2> Nathan Looney </h2>
+<h2> nal3vm </h2>
+<h2> OS X 10.9.5 / g++ </h2>
+<h2> 2 Late Days </h2>
+
+<h1> Writeup: </h1>
+
+<h3> RayScene::GetRay (1 point): </h3>
+<p> - Completed. Get Ray calculates ray through the (i,j)th pixel of an image plane 1 pixel away. </p>
+
+<h3> RayGroup::intersect (2 points): </h3>
+<p> - Completed and functional. </p>
+
+<h3> RaySphere::Intersect (2 points): </h3>
+<p> - Completed. Can accurately intersect with a sphere. </p>
+
+<h3> RayTriangle::intersect (2 points): </h3>
+<p> - Completed. Can accurately intersect with a triangle. </p>
+
+<h3> RayScene::GetColor (1 point): </h3>
+<p> - Competed. Can accurately return the color at the point of intersection. </p> 
+
+<h3> RayLights::getDiffuse (2 points): </h3>
+<p> - Completed. Calculates all the diffuse contributions from all lights within the scene and returns them to the GetColor method. </p>
+
+<img src="NAL3VM_HTML/diffuse.png" alt="diffuse">
+
+<h3> RayLights::getSpecular (2 points): </h3>
+<p> - Completed. Calculates all the specular contributions from all lights within the scene and returns them to the GetColor method. </p>
+
+<img src="NAL3VM_HTML/specular.png" alt="specular">
+
+<h3> RayLights::isInShadow (2 points): </h3>
+<p> - Completed. Casts a ray from the intersection to the lightsource, and if it intersects a shape, returns a 0 which removes that light sources contribution to the point. </p>
+
+<h3> RayScene::GetColor (Implementing lighting) (1 point): </h3>
+<p> - Completed. Modified GetColor so that it gathers all light contribution, determines if the spot is in shadow, and returns that to the RayTrace method. </p>
+
+<h3> RayGroup::intersect (Applying transformations) (2 points): </h3>
+<p> - Completed. Modified intersect to apply the inverse transform to the ray, casts it, then modifies the iInfo by the matrix transforms. </p>
+
+<h3> RayScene::GetColor (Reflections) (1 point): </h3>
+<p> - Completed. Modified GetColor to cast recursive rays throughout the scene and adds the contributed light to the intersection point. </p>
+<p> Note: This image may have some artifacts, as it was taken mid-development. </p>
+<img src="NAL3VM_HTML/shadowtransform.png" alt="shadows, transforms, reflections">
+
+<h3> RayScene::GetColor (Refractions, withiout calculating index) (1 point): </h3>
+<p> - Completed. Modified GetColor to cast recurse refraction rays through objects based on their indices of refraction and adds the resulting color contributions to the point, modified by each objects transparency. </p>
+
+<h3> RayScene::GetColor (Transparency) (2 points): </h3>
+<p> - Completed. Modified GetColor to use transparency instead of isInShadow so that objects cast partial shadows. </p>
+
+<img src="NAL3VM_HTML/transpandshadow.png" alt="Transparency">
+
+<h3> RayScene::GetColor (Refractions, with index) (2 points): </h3>
+<p> - Completed. Modified GetColor and refract to take into consideration the index of refraction when recursively refracting rays through the scene. </p> 
+
+ <h2> --- Accelerated Ray-Tracing --- <h2>
+
+<h3> BoundingBoxes (3 points): </h3>
+<p> - Completed. Implemented setBoundingBox for rayTriangle and raySphere to calculating a minimum AABB round the object and return it. Then implemented setBoundingBox for RayGroup so that it calculates the minimum AABB around the transformed object bounding boxes. Then implemented BoundingBox3D to calculte intersections with a given ray, and then used intersect within RayGroup to check for intersection with a bounding box before running intersection within it. </p>
+
+<h3> RayGroup::intersect (2 points): </h3>
+<p> - Completed. Modified RayGroup::intersect to check for hits between all bounding boxes in shapes, and then sorts them in order of intersection. </p>
+
+<p> Final output </p>
+<img src="NAL3VM_HTML/final.bmp" alt="Final image">
+
+
+<h3> Generating a 3D Scene (1 point): </h3>
+<p> - I generated a scene implementing all three light sources, using both triangles and spheres, and using transparent refraction. </p>
+
+<img src="NAL3VM_HTML/generated3Dscene.png" alt="3D Scene">
+
+<p> Submiting one image for the art contest (1 point) </p>
+
+<img src="NAL3VM_HTML/nal3vm.art.1.png" alt="3D Scene">
+
+<p> Submitting on .ray file for the art contest (1 point): nal3vm.rayart.1.ray </p>
+
+
+</body>
+</html>
+

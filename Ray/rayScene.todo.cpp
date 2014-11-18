@@ -23,19 +23,20 @@ int RayScene::Refract(Point3D v,Point3D n,double ir,Point3D& refract){
 }
 
 Ray3D RayScene::GetRay(RayCamera* camera,int i,int j,int width,int height){
-	double angle = camera->heightAngle;
+	double heightAngle = camera->heightAngle;
+	double widthAngle = heightAngle*camera->aspectRatio;
 	double pi = 3.1415926535897;
 	Point3D p0 = camera->position;
 
 	// Calculate the Z position of the coordinate relative to the XY plane.
-	Point3D pBottom = p0 + camera->direction - camera->up*tan((angle/2));
-	Point3D pTop = p0 + camera->direction + camera->up*tan((angle/2));
-	double planeHeight = 2*tan(angle/2);
+	Point3D pBottom = p0 + camera->direction - camera->up*tan((heightAngle/2));
+	Point3D pTop = p0 + camera->direction + camera->up*tan((heightAngle/2));
+	double planeHeight = 2*tan(heightAngle/2);
 
 	// Calculate the Y position of the coordinate relative to the XZ plane.
-	Point3D pLeft = p0 + camera->direction - camera->right*tan((angle/2));
-	Point3D pRight = p0 + camera->direction + camera->right*tan((angle/2));
-	double planeWidth = 2*tan(angle/2);
+	Point3D pLeft = p0 + camera->direction - camera->right*tan((widthAngle/2));
+	Point3D pRight = p0 + camera->direction + camera->right*tan((widthAngle/2));
+	double planeWidth = 2*tan(widthAngle/2);
 
 	Point3D pCorner = p0+camera->direction - camera->right*(planeWidth/2) - camera->up*(planeHeight/2);
 
