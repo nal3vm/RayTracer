@@ -119,6 +119,14 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
 // OpenGL stuff //
 //////////////////
 void RayMaterial::drawOpenGL(void){
+	GLfloat ambientList[3] = {ambient[0],ambient[1],ambient[3]};
+	GLfloat diffuseList[3] = {diffuse[0], diffuse[1], diffuse[2]};
+	GLfloat specularList[3] = {specular[0], specular[1], specular[2]};
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuseList);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambientList);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specularList);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, specularFallOff);
 }
 void RayTexture::setUpOpenGL(void){
+
 }

@@ -1,9 +1,5 @@
 #include <math.h>
-#ifdef __APPLE__
-	#include <GLUT/glut.h>
-#else
-	#include <GL/glut.h>
-#endif
+#include <GLUT/glut.h>
 #include "rayScene.h"
 #include "rayCylinder.h"
 
@@ -16,6 +12,9 @@ double RayCylinder::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 }
 
 BoundingBox3D RayCylinder::setBoundingBox(void){
+	Point3D p;
+	p=Point3D(radius,height/2,radius);
+	bBox=BoundingBox3D(center+p,center-p);
 	return bBox;
 }
 

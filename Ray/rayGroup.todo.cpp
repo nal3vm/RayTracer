@@ -78,7 +78,7 @@ BoundingBox3D RayGroup::setBoundingBox(void){
 		if(shapeBox.p[1][2] > bBox.p[1][2]){bBox.p[1][2]=shapeBox.p[1][2];}
 	}
 
-	std::cout << "<";
+/*	std::cout << "<";
 	std::cout << bBox.p[0][0];
 	std::cout << ",";
 	std::cout << bBox.p[0][1];
@@ -94,7 +94,7 @@ BoundingBox3D RayGroup::setBoundingBox(void){
 	std::cout << ",";
 	std::cout << bBox.p[1][2];
 	std::cout << ">";
-	std::cout << "\n";
+	std::cout << "\n";*/
 
 	return bBox;
 }
@@ -113,6 +113,14 @@ int RayGroup::getOpenGLCallList(void){
 }
 
 int RayGroup::drawOpenGL(int materialIndex){
+	glPushMatrix();
+	Matrix4D mat = getMatrix();
+	GLdouble input[16] = {GLdouble(mat(0,0)), GLdouble(mat(0,1)), GLdouble(mat(0,2)), GLdouble(mat(0,3)), GLdouble(mat(1,0)), GLdouble(mat(1,1)), GLdouble(mat(1,2)), GLdouble(mat(1,3)), GLdouble(mat(2,0)), GLdouble(mat(2,1)), GLdouble(mat(2,2)), GLdouble(mat(2,3)), GLdouble(mat(3,0)), GLdouble(mat(3,1)), GLdouble(mat(3,2)), GLdouble(mat(3,3))};
+	glMultMatrixd(input);
+	for (int i = 0; i < sNum; i++) {
+		shapes[i]->drawOpenGL(-1);
+	}
+	glPopMatrix();
 	return -1;
 }
 

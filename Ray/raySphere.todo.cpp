@@ -103,5 +103,8 @@ BoundingBox3D RaySphere::setBoundingBox(void){
 // OpenGL stuff //
 //////////////////
 int RaySphere::drawOpenGL(int materialIndex){
+	material->drawOpenGL();
+	glutSolidSphere(radius,50,50);
+	glFlush();
 	return -1;
 }

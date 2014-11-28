@@ -8,6 +8,7 @@
 //  Ray-tracing stuff //
 ////////////////////////
 void RayTriangle::initialize(void){
+	plane = Plane3D(v[0]->position, v[1]->position, v[2]->position);
 
 }
 double RayTriangle::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
@@ -73,5 +74,15 @@ BoundingBox3D RayTriangle::setBoundingBox(void){
 // OpenGL stuff //
 //////////////////
 int RayTriangle::drawOpenGL(int materialIndex){
+	material->drawOpenGL();
+	glBegin(GL_TRIANGLES);
+		glNormal3f(GLfloat(plane.normal[0]),GLfloat(plane.normal[1]),GLfloat(plane.normal[2]));
+		glVertex3f(GLfloat(v[0]->position[0]),GLfloat(v[0]->position[1]),GLfloat(v[0]->position[2]));
+		glNormal3f(GLfloat(plane.normal[0]),GLfloat(plane.normal[1]),GLfloat(plane.normal[2]));
+		glVertex3f(GLfloat(v[1]->position[0]),GLfloat(v[1]->position[1]),GLfloat(v[1]->position[2]));
+		glNormal3f(GLfloat(plane.normal[0]),GLfloat(plane.normal[1]),GLfloat(plane.normal[2]));
+		glVertex3f(GLfloat(v[2]->position[0]),GLfloat(v[2]->position[1]),GLfloat(v[2]->position[2]));
+	glEnd();
+	glFlush();
 	return -1;
 }

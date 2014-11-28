@@ -810,6 +810,8 @@ void RayScene::setUpOpenGL(int cplx){
 	group->setUpOpenGL(cplx,1);
 }
 void RayScene::drawOpenGL(void){
+	GLfloat global_ambient[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_ambient);
 	camera->drawOpenGL();
 
 	glEnable(GL_LIGHTING);
